@@ -13,11 +13,12 @@ clock = pygame.time.Clock()
 FlexyPath = os.path.dirname(os.path.abspath(__file__))
 screenSize = (1620 , 1000)
 window = pygame.display.set_mode(screenSize)
+enemySprite = [pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile011.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile012.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile013.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile014.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile015.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile016.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile017.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile018.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile019.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile0020.png")]
 
 playerSprite = pygame.image.load(FlexyPath + "/player.png")
 bg = pygame.image.load(FlexyPath + "/map.jpg")
+
 class player(object):
-    
     def __init__(self, x, y, width, height):
         self.width = width
         self.height = height
@@ -28,7 +29,14 @@ class player(object):
     def draw(self, window):
         window.blit(playerSprite, (self.x, self.y))
         
-
+class enemy(object):
+    def __init__(self, x, y, width, height):
+        self.width = width
+        self.height = height
+        self.x = x
+        self.y = y
+    def draw(self, window):
+        window.blit(enemySprite, (self.x, self.y))
         
 
 class background(object):
