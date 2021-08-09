@@ -1,4 +1,4 @@
-import pygame, os
+import pygame, os, math, numpy as np
 pygame.init()
 
 black = (0, 0, 0)
@@ -8,6 +8,7 @@ brown = (139,69,19)
 red = (255, 0, 0)
 
 clock = pygame.time.Clock()
+vec = pygame.math.Vector2
 
 
 FlexyPath = os.path.dirname(os.path.abspath(__file__))
@@ -24,7 +25,6 @@ for i in playerSpriteNsc:
     i = pygame.transform.scale(i, (100, 100))
     playerSprite.append(i)
 
-# playerSprite = pygame.image.load(FlexyPath + "/player.png")
 bg = pygame.image.load(FlexyPath + "/map.jpg")
 
 class player(object):
@@ -33,9 +33,11 @@ class player(object):
         self.height = height
         self.x = x
         self.y = y
-        self.speed = 10
+        self.speed = 5
+        
         self.changeSprite = 0
     def draw(self, window):
+        self.pos = vec(self.x, self.y)
         if self.changeSprite > 38:
             self.changeSprite = -1
         self.changeSprite += 1
@@ -49,7 +51,18 @@ class enemy(object):
         self.x = x
         self.y = y
         self.changeSprite = 0
+        self.rot = 0
     def draw(self, window):
+        self.pos = vec(self.x, self.y)
+        self.rot = (mainPlayer.pos - self.pos).angle_to(vec(1, 0))
+        if self.x > mainPlayer.x:
+            self.x -= 2
+        elif self.x < mainPlayer.x:
+            self.x += 2
+        if self.y < mainPlayer.y:
+            self.y += 2
+        elif self.y > mainPlayer.y:
+            self.y -= 2
         if self.changeSprite > 48:
             self.changeSprite = -1
         self.changeSprite += 1
@@ -75,7 +88,7 @@ def reDraw():
 running = True
 
 bgCam = background(0, 0, 10280, 7019)
-bad1 = enemy(100, 100, 40, 40)
+bad1 = enemy(500, 500, 40, 40)
 mainPlayer = player(screenSize[0]/2 - 100/2, screenSize[1]/2 - 91/2, 100, 91)
 while running:
     clock.tick(100)
@@ -114,8 +127,6 @@ while running:
         else:
             bgCam.x -= mainPlayer.speed
             bad1.x += mainPlayer.speed
-    
-    
 
     reDraw()
 pygame.quit()
