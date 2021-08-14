@@ -1,1 +1,1 @@
-            bad1.x += mainPlayer.speed
+10280
