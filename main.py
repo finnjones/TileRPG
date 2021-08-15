@@ -72,14 +72,14 @@ for i in playerSpriteNscB:
 
 
 bg = pygame.image.load(FlexyPath + "/map.png")
-
+minimap = pygame.image.load(FlexyPath + "/miniMap.png")
 class player(object):
     def __init__(self, x, y, width, height):
         self.width = width
         self.height = height
         self.x = x
         self.y = y
-        self.speed = 5
+        self.speed = 10
         
         self.changeSprite = 0
     def draw(self, window, playerSpriteR):
@@ -110,11 +110,11 @@ class enemy(object):
 
         if self.rot >= 225 and self.rot <= 315:
             enemySprite = enemySpriteF
-        if self.rot >= 45 and self.rot <= 90:
+        if self.rot >= 45 and self.rot <= 135:
             enemySprite = enemySpriteB
-        if self.rot > 90 and self.rot < 225:
+        if self.rot > 135 and self.rot < 225:
             enemySprite = enemySpriteL
-        if self.rot > 45 and self.rot > 315:
+        if self.rot < 45 or self.rot > 315:
             enemySprite = enemySpriteR
 
 
@@ -133,6 +133,19 @@ class enemy(object):
         window.blit(enemySprite[self.changeSprite//5], (self.x, self.y))
 
         
+class miniMap(object):
+    def __init__(self):
+        self.x = 1300
+        self.y = 50
+    def draw(self, window):
+        if mainPlayer.x > 1300 and mainPlayer.y < 210+50:
+            self.x = 50
+        else:
+            self.x = 1300 + 100
+
+        window.blit(minimap, (self.x, self.y))
+        pygame.draw.rect(window, red, pygame.Rect((mainPlayer.x + bgCam.x)/35 + self.x, (mainPlayer.y + bgCam.y)/35 + self.y, 3, 3))
+
 
 class background(object):
     def __init__(self, x, y, width, height):
@@ -147,12 +160,14 @@ def reDraw(playerS):
     bgCam.draw(window)
     mainPlayer.draw(window, playerS)
     bad1.draw(window)
+    miniMap.draw(window)
     pygame.display.flip()
 
 running = True
 
 bgCam = background(0, 0, 7000, 7000)
 bad1 = enemy(500, 500, 40, 40)
+miniMap = miniMap() 
 mainPlayer = player(screenSize[0]/2 - 100/2, screenSize[1]/2 - 91/2, 100, 91)
 
 while running:
@@ -166,35 +181,39 @@ while running:
 
     if keys[pygame.K_w]:
         playerSprite = playerSpriteB
-        if bgCam.y < 0 + 10 or mainPlayer.y > screenSize[1]/2 - 91/2:
-            mainPlayer.y -= mainPlayer.speed
-        else:
-            bgCam.y -= mainPlayer.speed
-            bad1.y += mainPlayer.speed
+        if mainPlayer.y > -10:
+            if bgCam.y < 0 + 10 or mainPlayer.y > screenSize[1]/2 - 91/2:
+                mainPlayer.y -= mainPlayer.speed
+            else:
+                bgCam.y -= mainPlayer.speed
+                bad1.y += mainPlayer.speed
 
     if keys[pygame.K_s]:
         playerSprite = playerSpriteF
-        if (bgCam.y - bgCam.height + screenSize[1]) > 0 or mainPlayer.y != screenSize[1]/2 - 91/2:
-            mainPlayer.y += mainPlayer.speed
-        else:
-            bgCam.y += mainPlayer.speed
-            bad1.y -= mainPlayer.speed
+        if mainPlayer.y < screenSize[1] - 100:
+            if (bgCam.y - bgCam.height + screenSize[1]) > 0 - 10 or mainPlayer.y != screenSize[1]/2 - 91/2:
+                mainPlayer.y += mainPlayer.speed
+            else:
+                bgCam.y += mainPlayer.speed
+                bad1.y -= mainPlayer.speed
 
     if keys[pygame.K_d]:
         playerSprite = playerSpriteR
-        if (bgCam.x - bgCam.height + screenSize[0]) > 0 or mainPlayer.x != screenSize[0]/2 - 100/2:
-            mainPlayer.x += mainPlayer.speed
-        else:
-            bgCam.x += mainPlayer.speed
-            bad1.x -= mainPlayer.speed
+        if mainPlayer.x < screenSize[0] - 100 + 30:
+            if (bgCam.x - bgCam.height + screenSize[0]) > 0 - 10 or mainPlayer.x != screenSize[0]/2 - 100/2:
+                mainPlayer.x += mainPlayer.speed
+            else:
+                bgCam.x += mainPlayer.speed
+                bad1.x -= mainPlayer.speed
 
     if keys[pygame.K_a]:
         playerSprite = playerSpriteL
-        if bgCam.x < 0 + 10 or mainPlayer.x != screenSize[0]/2 - 100/2:
-            mainPlayer.x -= mainPlayer.speed
-        else:
-            bgCam.x -= mainPlayer.speed
-            bad1.x += mainPlayer.speed
+        if mainPlayer.x > -20:
+            if bgCam.x < 0 + 10 or mainPlayer.x != screenSize[0]/2 - 100/2:
+                mainPlayer.x -= mainPlayer.speed
+            else:
+                bgCam.x -= mainPlayer.speed
+                bad1.x += mainPlayer.speed
 
     reDraw(playerSprite)
 pygame.quit()
