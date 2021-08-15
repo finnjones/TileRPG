@@ -1,4 +1,5 @@
 import pygame, os, math, numpy as np
+
 pygame.init()
 
 black = (0, 0, 0)
@@ -13,6 +14,7 @@ vec = pygame.math.Vector2
 
 FlexyPath = os.path.dirname(os.path.abspath(__file__))
 screenSize = (1620 , 1000)
+
 window = pygame.display.set_mode(screenSize)
 # enemySpriteNsc = [pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/FrontW/tile011.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile012.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile013.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile014.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile015.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile016.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile017.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile018.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile019.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile020.png")]
 playerSpriteNscF = [pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile014.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile015.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile016.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile017.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile018.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile019.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile020.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile021.png")]
@@ -39,40 +41,48 @@ playerSpriteB = []
 
 for i in enemySpriteNscF:
     i = pygame.transform.scale(i, (100, 100))
+    i.convert()
     enemySpriteF.append(i)
 
 for i in enemySpriteNscR:
     i = pygame.transform.scale(i, (100, 100))
+    i.convert()
     enemySpriteR.append(i)
 
 for i in enemySpriteNscL:
     i = pygame.transform.scale(i, (100, 100))
+    i.convert()
     enemySpriteL.append(i)
     
 for i in enemySpriteNscB:
     i = pygame.transform.scale(i, (100, 100))
+    i.convert()
     enemySpriteB.append(i)
 
 
 for i in playerSpriteNscF:
     i = pygame.transform.scale(i, (100, 100))
+    i.convert()
     playerSpriteF.append(i)
 
 for i in playerSpriteNscR:
     i = pygame.transform.scale(i, (100, 100))
+    i.convert()
     playerSpriteR.append(i)
 
 for i in playerSpriteNscL:
     i = pygame.transform.scale(i, (100, 100))
+    i.convert()
     playerSpriteL.append(i)
     
 for i in playerSpriteNscB:
     i = pygame.transform.scale(i, (100, 100))
+    i.convert()
     playerSpriteB.append(i)
 
 
-bg = pygame.image.load(FlexyPath + "/map.png")
-minimap = pygame.image.load(FlexyPath + "/miniMap.png")
+bg = pygame.image.load(FlexyPath + "/map.png").convert()
+minimap = pygame.image.load(FlexyPath + "/miniMap.png").convert()
 class player(object):
     def __init__(self, x, y, width, height):
         self.width = width
@@ -105,7 +115,7 @@ class enemy(object):
         if self.rot < 0:
             self.rot += 360
         # print(self.changeSprite)
-        print(self.rot)
+        # print(self.rot)
         enemySprite = enemySpriteF
 
         if self.rot >= 225 and self.rot <= 315:
@@ -173,6 +183,9 @@ mainPlayer = player(screenSize[0]/2 - 100/2, screenSize[1]/2 - 91/2, 100, 91)
 while running:
     clock.tick(100)
     playerSprite = playerSpriteF
+    fps = str(int(clock. get_fps()))
+    pygame.display.set_caption(fps)
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
