@@ -154,7 +154,7 @@ class miniMap(object):
             self.x = 1300 + 100
 
         window.blit(minimap, (self.x, self.y))
-        pygame.draw.rect(window, red, pygame.Rect((mainPlayer.x + bgCam.x)/35 + self.x, (mainPlayer.y + bgCam.y)/35 + self.y, 3, 3))
+        pygame.draw.rect(window, red, pygame.Rect((mainPlayer.x + bgCam.x)/35 + self.x + 5, (mainPlayer.y + bgCam.y)/35 + self.y + 5, 3, 3))
 
 
 class background(object):
@@ -181,7 +181,7 @@ miniMap = miniMap()
 mainPlayer = player(screenSize[0]/2 - 100/2, screenSize[1]/2 - 91/2, 100, 91)
 
 while running:
-    clock.tick(100)
+    clock.tick(60)
     playerSprite = playerSpriteF
     fps = str(int(clock. get_fps()))
     pygame.display.set_caption(fps)
