@@ -39,6 +39,8 @@ playerSpriteR = []
 playerSpriteL = []
 playerSpriteB = []
 
+bullets = []
+
 for i in enemySpriteNscF:
     i = pygame.transform.scale(i, (100, 100))
     i.convert()
@@ -90,17 +92,51 @@ class player(object):
         self.x = x
         self.y = y
         self.speed = 10
-        
+        self.rot = 0
         self.changeSprite = 0
+        self.shoot = False
     def draw(self, window, playerSpriteR):
-        
         self.pos = vec(self.x, self.y)
         if self.changeSprite > 38:
             self.changeSprite = -1
         self.changeSprite += 1
         window.blit(playerSpriteR[self.changeSprite//5], (self.x, self.y))
 
-        
+
+class shooting(object):
+    def __init__(self, playerx, playery, mouse):
+
+        self.camx = bgCam.x
+        self.camy = bgCam.y
+        self.playerx = playerx
+        self.playery = playery
+        self.x = playerx + 50
+        self.y = playery + 50
+        self.Playerpos = vec(playerx + 50, playery + 50)
+        self.rot = (vec(mouse) - self.Playerpos).angle_to(vec(1, 0)) + 90
+        if self.rot < 0:
+            self.rot += 360
+
+
+        self.shoot = True
+        bullets.append(self)
+    def draw(self, window):
+   
+        self.x = self.x + (15*math.sin(math.radians(self.rot)))
+        self.y = self.y + (15*math.cos(math.radians(self.rot)))
+        if self.camx != bgCam.x:
+            self.x += (self.camx - bgCam.x)
+            self.camx = bgCam.x
+        if self.camy != bgCam.y:
+            self.y += (self.camy - bgCam.y)
+            self.camy = bgCam.y
+        if self.x < 0 or self.x > screenSize[0] or self.y < 0 or self.y > screenSize[1]:
+            bullets.remove(self)
+        print(bullets)
+        pygame.draw.circle(window, black, (self.x,self.y), 10)
+
+
+    
 class enemy(object):
     def __init__(self, x, y, width, height):
         self.width = width
@@ -114,8 +150,6 @@ class enemy(object):
         self.rot = (mainPlayer.pos - self.pos).angle_to(vec(1, 0))
         if self.rot < 0:
             self.rot += 360
-        # print(self.changeSprite)
-        # print(self.rot)
         enemySprite = enemySpriteF
 
         if self.rot >= 225 and self.rot <= 315:
@@ -170,6 +204,8 @@ def reDraw(playerS):
     bgCam.draw(window)
     mainPlayer.draw(window, playerS)
     bad1.draw(window)
+    for i in bullets:
+        i.draw(window)
     miniMap.draw(window)
     pygame.display.flip()
 
@@ -189,6 +225,11 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            print(pygame.mouse.get_pos())
+            shooting(mainPlayer.x, mainPlayer.y, pygame.mouse.get_pos())
+
 
     keys = pygame.key.get_pressed()
 
