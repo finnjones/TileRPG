@@ -240,7 +240,7 @@ miniMap = miniMap()
 mainPlayer = player(screenSize[0]/2 - 100/2, screenSize[1]/2 - 91/2, 100, 91)
 
 while running:
-    clock.tick(100)
+    clock.tick(60)
     playerSprite = playerSpriteF
     fps = str(int(clock. get_fps()))
     pygame.display.set_caption(fps)
