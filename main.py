@@ -137,7 +137,6 @@ class shooting(object):
             self.camy = bgCam.y
         if self.x < 0 or self.x > screenSize[0] or self.y < 0 or self.y > screenSize[1]:
             bullets.remove(self)
-        print(bullets)
         pygame.draw.circle(window, black, (self.x,self.y), 10)
 
 
@@ -212,7 +211,18 @@ def reDraw(playerS):
     for i in bullets:
         i.draw(window)
     miniMap.draw(window)
+    for i in NEQuadrant:
+        pygame.draw.rect(window, red, pygame.Rect(i[0] - bgCam.x, i[1] - bgCam.y, i[2], i[3]))
+    for i in NWQuadrant:
+        pygame.draw.rect(window, red, pygame.Rect(i[0] - bgCam.x, i[1] - bgCam.y, i[2], i[3]))
+    for i in SEQuadrant:
+        pygame.draw.rect(window, red, pygame.Rect(i[0] - bgCam.x, i[1] - bgCam.y, i[2], i[3]))
+    for i in SWQuadrant:
+        pygame.draw.rect(window, red, pygame.Rect(i[0] - bgCam.x, i[1] - bgCam.y, i[2], i[3]))
+
     pygame.display.flip()
+    
+
 
 def checkCollision(xPos, yPos):
     if xPos > 3500:
@@ -245,12 +255,13 @@ while running:
     fps = str(int(clock. get_fps()))
     pygame.display.set_caption(fps)
 
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            print(pygame.mouse.get_pos())
+            # print(pygame.mouse.get_pos())
             shooting(mainPlayer.x, mainPlayer.y, pygame.mouse.get_pos())
 
 
@@ -297,4 +308,5 @@ while running:
                     bad1.x += mainPlayer.speed
 
     reDraw(playerSprite)
+
 pygame.quit()
