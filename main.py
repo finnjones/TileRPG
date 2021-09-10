@@ -33,6 +33,9 @@ enemySpriteNscR = [pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//ti
 enemySpriteNscL = [pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile014.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile015.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile016.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile017.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile018.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile019.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile020.png"), True, False)]
 enemySpriteNscB = [pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile014.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile015.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile016.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile017.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile018.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW//tile019.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile020.png")]
 
+gun = [pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/0.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/1.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/2.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/3.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/4.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/5.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/6.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/7.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/8.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/9.png"), True, False)]
+
+
 enemySprite = []
 enemySpriteF = []
 enemySpriteR = []
@@ -49,8 +52,12 @@ rectMapNE = []
 rectMapSW = []
 rectMapSW = []
 
+
+
 bullets = []
 enemies = []
+
+
 
 
 
@@ -169,27 +176,6 @@ class shooting(object):
             if checkCollision(self.x, self.y, True) == False:
                 bullets.remove(self)
                 print("remove")
-            # yPos = self.y + background.y
-            # xPos = self.x + background.x
-            # if xPos > 3500:
-            #     if yPos > 3500:
-            #         objectList = walls.rectMapSE
-            #     else:
-            #         objectList = walls.rectMapNE
-            # else:
-            #     if yPos < 3500:
-            #         objectList = walls.rectMapNW
-            #     else:
-            #         objectList = walls.rectMapSW
-            # for i in objectList:
-            #     if self.rect.colliderect(i) == 1:
-            #         print(bullets, self)
-
-            #         bullets.remove(self)
-            #         print("remove")
-            #         break
-
-
 
         pygame.draw.circle(window, black, (self.x,self.y), 10)
 
@@ -281,7 +267,19 @@ class background(object):
 
 
 
+changeSpritez = -1
 
+    
+def ammo():
+    global changeSpritez
+    global Reload
+    if Reload == True:
+        if changeSpritez > 64:
+            Reload = False
+            changeSpritez = -1
+        changeSpritez += 1
+        print(changeSpritez)
+        window.blit(gun[changeSpritez//8], (1200, 600))
 
 def reDraw(playerS):
     background.draw(window)
@@ -291,8 +289,11 @@ def reDraw(playerS):
     for i in bullets:
         i.draw(window)
     miniMap.draw(window)
-
-
+    if Reload == True:
+        ammo()
+    else:
+        window.blit(gun[0], (1200, 600))
+    
     walls.draw()
     for i in NEQuadrant:
         pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
@@ -335,6 +336,8 @@ def checkCollision(xPos, yPos, shoot):
                     return False
     return True
 
+
+Reload = False
 running = True
 walls = walls()
 background = background(0, 0, 7000, 7000)
@@ -405,6 +408,13 @@ while running:
                     background.x -= mainPlayer.speed
                     for enemy in enemies:
                         enemy.x += mainPlayer.speed
+    if keys[pygame.K_r]:
+        Reload = True
+
+
+
+        
+        
 
     reDraw(playerSprite)
 
