@@ -33,8 +33,16 @@ enemySpriteNscR = [pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//ti
 enemySpriteNscL = [pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile014.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile015.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile016.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile017.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile018.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile019.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/SideW//tile020.png"), True, False)]
 enemySpriteNscB = [pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile014.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile015.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile016.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile017.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile018.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW//tile019.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile020.png")]
 
-healthHeart = pygame.image.load(FlexyPath + "/Sprites/heart.png")
+gun = [pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/0.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/1.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/2.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/3.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/4.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/5.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/6.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/7.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/8.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/9.png"), True, False)]
+
+healthHeart = pygame.image.load(FlexyPath + "/Sprites/Misc/heart.png")
 healthHeart = pygame.transform.scale(healthHeart, (50, 50)) 
+
+coin = pygame.image.load(FlexyPath + "/Sprites/Misc/coin.png")
+coin = pygame.transform.scale(coin, (50, 50)) 
+
+font = pygame.font.Font('freesansbold.ttf', 26)
+
 
 enemySprite = []
 enemySpriteF = []
@@ -52,8 +60,12 @@ rectMapNE = []
 rectMapSW = []
 rectMapSW = []
 
+
+
 bullets = []
 enemies = []
+
+
 
 
 
@@ -111,9 +123,11 @@ class player(object):
         self.y = y
         self.speed = 10
         self.health = 100
+        self.bulletDamage = 20
         self.rot = 0
         self.changeSprite = 0
         self.shoot = False
+        self.money = 0
         self.rect = pygame.Rect(x, y, 100, 100)
 
     def draw(self, window, playerSpriteR):
@@ -135,7 +149,6 @@ class shooting(object):
         self.playery = playery
         self.x = playerx + 50
         self.y = playery + 50
-        self.health = 50
         self.Playerpos = vec(playerx + 50, playery + 50)
         self.rot = (vec(mouse) - self.Playerpos).angle_to(vec(1, 0)) + 90
 
@@ -167,6 +180,11 @@ class shooting(object):
                     bullets.remove(self)
                     print("remove1")
                     self.collideT = True
+                    if i.health - mainPlayer.bulletDamage > 0:
+                        i.health -= mainPlayer.bulletDamage
+                    else:
+                        enemies.remove(i)
+                        mainPlayer.money += 10
                     break
 
         
@@ -174,27 +192,6 @@ class shooting(object):
             if checkCollision(self.x, self.y, True) == False:
                 bullets.remove(self)
                 print("remove")
-            # yPos = self.y + background.y
-            # xPos = self.x + background.x
-            # if xPos > 3500:
-            #     if yPos > 3500:
-            #         objectList = walls.rectMapSE
-            #     else:
-            #         objectList = walls.rectMapNE
-            # else:
-            #     if yPos < 3500:
-            #         objectList = walls.rectMapNW
-            #     else:
-            #         objectList = walls.rectMapSW
-            # for i in objectList:
-            #     if self.rect.colliderect(i) == 1:
-            #         print(bullets, self)
-
-            #         bullets.remove(self)
-            #         print("remove")
-            #         break
-
-
 
         pygame.draw.circle(window, black, (self.x,self.y), 10)
 
@@ -220,6 +217,7 @@ class enemy(object):
         self.height = height
         self.x = x
         self.y = y
+        self.health = 50
         self.changeSprite = 0
         self.rot = 0
         self.searchArea = 2000
@@ -286,28 +284,58 @@ class background(object):
 
 
 
+changeSpritez = -1
 
+    
+def ammo():
+    global changeSpritez
+    global Reload
+    if Reload == True:
+        if changeSpritez > 64:
+            Reload = False
+            changeSpritez = -1
+        changeSpritez += 1
+        print(changeSpritez)
+        window.blit(gun[changeSpritez//8], (1200, 600))
+
+def enemyHealthBar(i):
+    if i.health != 50:
+            pygame.draw.rect(window, "red", pygame.Rect(i.x+24, i.y+105, 50, 5))
+            pygame.draw.rect(window, "green", pygame.Rect(i.x+24, i.y+105, i.health, 5))
+
+def playerHealthBar():
+    pygame.draw.rect(window, "black", pygame.Rect(67, 867, 186, 36))
+    pygame.draw.rect(window, "white", pygame.Rect(70, 870, 180, 30))
+    if mainPlayer.health > 75:
+        pygame.draw.rect(window, "green", pygame.Rect(70, 870, round(mainPlayer.health*(180/100)), 30))
+    elif mainPlayer.health > 25:
+        pygame.draw.rect(window, (255, 185, 0), pygame.Rect(70, 870, round(mainPlayer.health*(180/100)), 30))
+    else:
+        pygame.draw.rect(window, "red", pygame.Rect(70, 920, round(mainPlayer.health*(180/100), 30)))
+    # heart (x,y)= (barX - 34, barY - 12)
+    window.blit(healthHeart, (36, 858))
 
 def reDraw(playerS):
     background.draw(window)
     mainPlayer.draw(window, playerS)
     for i in enemies:
         i.draw(window)
+        enemyHealthBar(i)
     for i in bullets:
         i.draw(window)
     miniMap.draw(window)
-
-    pygame.draw.rect(window, "black", pygame.Rect(67, 917, 186, 36))
-    pygame.draw.rect(window, "white", pygame.Rect(70, 920, 180, 30))
-    if mainPlayer.health > 75:
-        pygame.draw.rect(window, "green", pygame.Rect(70, 920, round(mainPlayer.health*(180/100)), 30))
-    elif mainPlayer.health > 25:
-        pygame.draw.rect(window, (255, 185, 0), pygame.Rect(70, 920, round(mainPlayer.health*(180/100)), 30))
+    if Reload == True:
+        ammo()
     else:
-        pygame.draw.rect(window, "red", pygame.Rect(70, 920, round(mainPlayer.health*(180/100), 30)))
-    # heart (x,y)= (barX - 34, barY - 12)
-    window.blit(healthHeart, (36, 908))
+        window.blit(gun[0], (1200, 600))
+    
+    playerHealthBar()
 
+    pygame.draw.rect(window, "black", pygame.Rect(57, 927, 136, 36))
+    pygame.draw.rect(window, "white", pygame.Rect(60, 930, 130, 30))
+    textsurface = font.render(str(mainPlayer.money), False, (0, 0, 0))
+    window.blit(textsurface, (95,932))
+    window.blit(coin, (38, 920))
 
     walls.draw()
     for i in NEQuadrant:
@@ -351,6 +379,8 @@ def checkCollision(xPos, yPos, shoot):
                     return False
     return True
 
+
+Reload = False
 running = True
 walls = walls()
 background = background(0, 0, 7000, 7000)
@@ -421,6 +451,13 @@ while running:
                     background.x -= mainPlayer.speed
                     for enemy in enemies:
                         enemy.x += mainPlayer.speed
+    if keys[pygame.K_r]:
+        Reload = True
+
+
+
+        
+        
 
     reDraw(playerSprite)
 
