@@ -1,4 +1,4 @@
-import pygame, os, math, numpy as np
+import pygame, os, math, numpy as np, random
 from pygame.locals import *
 pygame.init()
 
@@ -44,7 +44,15 @@ playerSpriteR = []
 playerSpriteL = []
 playerSpriteB = []
 
+rectMapNW = []
+rectMapNE = []
+rectMapSW = []
+rectMapSW = []
+
 bullets = []
+enemies = []
+
+
 
 for i in enemySpriteNscF:
     i = pygame.transform.scale(i, (100, 100))
@@ -88,8 +96,10 @@ for i in playerSpriteNscB:
     playerSpriteB.append(i)
 
 
+
 bg = pygame.image.load(FlexyPath + "/map.png").convert()
 minimap = pygame.image.load(FlexyPath + "/miniMap.png").convert()
+
 class player(object):
     def __init__(self, x, y, width, height):
         self.width = width
@@ -100,7 +110,8 @@ class player(object):
         self.rot = 0
         self.changeSprite = 0
         self.shoot = False
-        self.rect = pygame.Rect(x, y, 50, 50)
+        self.rect = pygame.Rect(x, y, 100, 100)
+
     def draw(self, window, playerSpriteR):
 
             
@@ -114,14 +125,16 @@ class player(object):
 class shooting(object):
     def __init__(self, playerx, playery, mouse):
 
-        self.camx = bgCam.x
-        self.camy = bgCam.y
+        self.camx = background.x
+        self.camy = background.y
         self.playerx = playerx
         self.playery = playery
         self.x = playerx + 50
         self.y = playery + 50
         self.Playerpos = vec(playerx + 50, playery + 50)
         self.rot = (vec(mouse) - self.Playerpos).angle_to(vec(1, 0)) + 90
+
+        
         if self.rot < 0:
             self.rot += 360
 
@@ -129,27 +142,73 @@ class shooting(object):
         self.shoot = True
         bullets.append(self)
     def draw(self, window):
-   
+        self.collideT = False
+        self.rect = pygame.Rect(self.x, self.y, 10, 10)
         self.x = self.x + (15*math.sin(math.radians(self.rot)))
         self.y = self.y + (15*math.cos(math.radians(self.rot)))
-        if self.camx != bgCam.x:
-            self.x += (self.camx - bgCam.x)
-            self.camx = bgCam.x
-        if self.camy != bgCam.y:
-            self.y += (self.camy - bgCam.y)
-            self.camy = bgCam.y
+        if self.camx != background.x:
+            self.x += (self.camx - background.x)
+            self.camx = background.x
+        if self.camy != background.y:
+            self.y += (self.camy - background.y)
+            self.camy = background.y
         if self.x < 0 or self.x > screenSize[0] or self.y < 0 or self.y > screenSize[1]:
             bullets.remove(self)
-        if checkCollision(self.x, self.y) is False:
-            try:
+            self.collideT = True
+        
+        if self.collideT == False:
+            for i in enemies:
+                if self.rect.colliderect(i.rect) == 1:
+                    bullets.remove(self)
+                    print("remove1")
+                    self.collideT = True
+                    break
+
+        
+        if self.collideT == False:
+            if checkCollision(self.x, self.y, True) == False:
                 bullets.remove(self)
-            except:
-                print("nvm")
+                print("remove")
+            # yPos = self.y + background.y
+            # xPos = self.x + background.x
+            # if xPos > 3500:
+            #     if yPos > 3500:
+            #         objectList = walls.rectMapSE
+            #     else:
+            #         objectList = walls.rectMapNE
+            # else:
+            #     if yPos < 3500:
+            #         objectList = walls.rectMapNW
+            #     else:
+            #         objectList = walls.rectMapSW
+            # for i in objectList:
+            #     if self.rect.colliderect(i) == 1:
+            #         print(bullets, self)
+
+            #         bullets.remove(self)
+            #         print("remove")
+            #         break
+
+
 
         pygame.draw.circle(window, black, (self.x,self.y), 10)
 
-
-    
+class walls(object):
+    def __init__(self):
+        self.rectMapNW = []
+        self.rectMapNE = []
+        self.rectMapSW = []
+        self.rectMapSW = []
+    def draw(self):
+        for i in NWQuadrant:
+            self.rectMapNW.append(pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
+        for i in NEQuadrant:
+            self.rectMapNE.append(pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
+        for i in SWQuadrant:
+            self.rectMapSW.append(pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
+        for i in SWQuadrant:
+            self.rectMapSW.append(pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
+        
 class enemy(object):
     def __init__(self, x, y, width, height):
         self.width = width
@@ -158,7 +217,11 @@ class enemy(object):
         self.y = y
         self.changeSprite = 0
         self.rot = 0
+        self.searchArea = 2000
+        self.rect = pygame.Rect(self.x, self.y, 100, 100)
+        enemies.append(self)
     def draw(self, window):
+        self.rect = pygame.Rect(self.x, self.y, 100, 100)
         self.pos = vec(self.x, self.y)
         self.rot = (mainPlayer.pos - self.pos).angle_to(vec(1, 0))
         if self.rot < 0:
@@ -174,15 +237,18 @@ class enemy(object):
         if self.rot < 45 or self.rot > 315:
             enemySprite = enemySpriteR
 
+        if abs(self.y - mainPlayer.y) < self.searchArea and abs(self.x - mainPlayer.y) < self.searchArea:
 
-        if self.y < mainPlayer.y:
-            self.y += 2
-        if self.y > mainPlayer.y:
-            self.y -= 2
-        if self.x > mainPlayer.x:
-            self.x -= 2
-        if self.x < mainPlayer.x:
-            self.x += 2
+            if self.y < mainPlayer.y:
+                self.y += 2
+            if self.y > mainPlayer.y:
+                self.y -= 2
+            if self.x > mainPlayer.x:
+                self.x -= 2
+            if self.x < mainPlayer.x:
+                self.x += 2
+
+
         if self.changeSprite > 33:
             self.changeSprite = -1
         self.changeSprite += 1
@@ -201,7 +267,7 @@ class miniMap(object):
             self.x = 1300 + 100
 
         window.blit(minimap, (self.x, self.y))
-        pygame.draw.rect(window, red, pygame.Rect((mainPlayer.x + bgCam.x)/35 + self.x, (mainPlayer.y + bgCam.y)/35 + self.y, 3, 3))
+        pygame.draw.rect(window, red, pygame.Rect((mainPlayer.x + background.x)/35 + self.x, (mainPlayer.y + background.y)/35 + self.y, 3, 3))
 
 
 class background(object):
@@ -213,29 +279,40 @@ class background(object):
     def draw(self, window):
         window.blit(bg, (0 - self.x, 0 - self.y))
 
+
+
+
+
 def reDraw(playerS):
-    bgCam.draw(window)
+    background.draw(window)
     mainPlayer.draw(window, playerS)
-    bad1.draw(window)
+    for i in enemies:
+        i.draw(window)
     for i in bullets:
         i.draw(window)
     miniMap.draw(window)
+
+
+    walls.draw()
     for i in NEQuadrant:
-        pygame.draw.rect(window, red, pygame.Rect(i[0] - bgCam.x, i[1] - bgCam.y, i[2], i[3]))
+        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
     for i in NWQuadrant:
-        pygame.draw.rect(window, red, pygame.Rect(i[0] - bgCam.x, i[1] - bgCam.y, i[2], i[3]))
+        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
     for i in SEQuadrant:
-        pygame.draw.rect(window, red, pygame.Rect(i[0] - bgCam.x, i[1] - bgCam.y, i[2], i[3]))
+        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
     for i in SWQuadrant:
-        pygame.draw.rect(window, red, pygame.Rect(i[0] - bgCam.x, i[1] - bgCam.y, i[2], i[3]))
+        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
 
     pygame.display.flip()
     
 
+    
 
-def checkCollision(xPos, yPos):
-    yPos += bgCam.y
-    xPos += bgCam.x
+def checkCollision(xPos, yPos, shoot):
+
+    yPos += background.y
+    xPos += background.x
+
     if xPos > 3500:
         if yPos > 3500:
             objectList = SEQuadrant
@@ -248,16 +325,23 @@ def checkCollision(xPos, yPos):
             objectList = SWQuadrant
     for i in range(0, len(objectList)):
     
-
-        if xPos > objectList[i][0] and xPos < objectList[i][0] + objectList[i][2] or xPos + mainPlayer.width/2 > objectList[i][0] and xPos + mainPlayer.width/2 < objectList[i][0] + objectList[i][2] or xPos - mainPlayer.width/2 > objectList[i][0] and xPos - mainPlayer.width/2 < objectList[i][0] + objectList[i][2]:
-            if yPos > objectList[i][1] and yPos < objectList[i][1] + objectList[i][3] or yPos +  mainPlayer.height/2 > objectList[i][1] and yPos + mainPlayer.height/2 < objectList[i][1] + objectList[i][3] or yPos - mainPlayer.height/2 > objectList[i][1] and yPos - mainPlayer.height/2 < objectList[i][1] + objectList[i][3]:
-                return False
+        if shoot == False:
+            if xPos > objectList[i][0] and xPos < objectList[i][0] + objectList[i][2] or xPos + mainPlayer.width/2 > objectList[i][0] and xPos + mainPlayer.width/2 < objectList[i][0] + objectList[i][2] or xPos - mainPlayer.width/2 > objectList[i][0] and xPos - mainPlayer.width/2 < objectList[i][0] + objectList[i][2]:
+                if yPos > objectList[i][1] and yPos < objectList[i][1] + objectList[i][3] or yPos +  mainPlayer.height/2 > objectList[i][1] and yPos + mainPlayer.height/2 < objectList[i][1] + objectList[i][3] or yPos - mainPlayer.height/2 > objectList[i][1] and yPos - mainPlayer.height/2 < objectList[i][1] + objectList[i][3]:
+                    return False
+        else:
+            if xPos > objectList[i][0] and xPos < objectList[i][0] + objectList[i][2] or xPos + 10/2 > objectList[i][0] and xPos + 10/2 < objectList[i][0] + objectList[i][2] or xPos - 10/2 > objectList[i][0] and xPos - 10/2 < objectList[i][0] + objectList[i][2]:
+                if yPos > objectList[i][1] and yPos < objectList[i][1] + objectList[i][3] or yPos +  10/2 > objectList[i][1] and yPos + 10/2 < objectList[i][1] + objectList[i][3] or yPos - 10/2 > objectList[i][1] and yPos - 10/2 < objectList[i][1] + objectList[i][3]:
+                    return False
     return True
 
 running = True
+walls = walls()
+background = background(0, 0, 7000, 7000)
+enemyCount = 10
 
-bgCam = background(0, 0, 7000, 7000)
-bad1 = enemy(500, 500, 40, 40)
+for i in range(0, enemyCount):
+    enemy(50 + random.randint(3, 5000), 50 + random.randint(3, 5000), 40, 40)
 miniMap = miniMap() 
 mainPlayer = player(screenSize[0]/2 - 100/2, screenSize[1]/2 - 91/2, 100, 91)
 
@@ -281,42 +365,46 @@ while running:
     if keys[pygame.K_w]:
         playerSprite = playerSpriteB
         if mainPlayer.y > -10:
-            if checkCollision(mainPlayer.x + 50, mainPlayer.y + 65.5 - mainPlayer.speed) == True:
-                if bgCam.y < 0 + 10 or mainPlayer.y > screenSize[1]/2 - 91/2:
+            if checkCollision(mainPlayer.x + 50, mainPlayer.y + 65.5 - mainPlayer.speed, False) == True:
+                if background.y < 0 + 10 or mainPlayer.y > screenSize[1]/2 - 91/2:
                     mainPlayer.y -= mainPlayer.speed
                 else:
-                    bgCam.y -= mainPlayer.speed
-                    bad1.y += mainPlayer.speed
+                    background.y -= mainPlayer.speed
+                    for enemy in enemies:
+                        enemy.y += mainPlayer.speed
 
     if keys[pygame.K_s]:
         playerSprite = playerSpriteF
         if mainPlayer.y < screenSize[1] - 100:
-            if checkCollision(mainPlayer.x + 50,mainPlayer.y + 65.5 + mainPlayer.speed) == True:
-                if (bgCam.y - bgCam.height + screenSize[1]) > 0 - 10 or mainPlayer.y != screenSize[1]/2 - 91/2:
+            if checkCollision(mainPlayer.x + 50,mainPlayer.y + 65.5 + mainPlayer.speed, False) == True:
+                if (background.y - background.height + screenSize[1]) > 0 - 10 or mainPlayer.y != screenSize[1]/2 - 91/2:
                     mainPlayer.y += mainPlayer.speed
                 else:
-                    bgCam.y += mainPlayer.speed
-                    bad1.y -= mainPlayer.speed
+                    background.y += mainPlayer.speed
+                    for enemy in enemies:
+                        enemy.y -= mainPlayer.speed
 
     if keys[pygame.K_d]:
         playerSprite = playerSpriteR
         if mainPlayer.x < screenSize[0] - 100 + 30:
-            if checkCollision(mainPlayer.x + 50 + mainPlayer.speed, mainPlayer.y + 65.5) == True:
-                if (bgCam.x - bgCam.height + screenSize[0]) > 0 - 10 or mainPlayer.x != screenSize[0]/2 - 100/2:
+            if checkCollision(mainPlayer.x + 50 + mainPlayer.speed, mainPlayer.y + 65.5, False) == True:
+                if (background.x - background.height + screenSize[0]) > 0 - 10 or mainPlayer.x != screenSize[0]/2 - 100/2:
                     mainPlayer.x += mainPlayer.speed
                 else:
-                    bgCam.x += mainPlayer.speed
-                    bad1.x -= mainPlayer.speed
+                    background.x += mainPlayer.speed
+                    for enemy in enemies:
+                        enemy.x -= mainPlayer.speed
 
     if keys[pygame.K_a]:
         playerSprite = playerSpriteL
         if mainPlayer.x > -20:
-            if checkCollision(mainPlayer.x + 50 - mainPlayer.speed, mainPlayer.y + 65.5) == True:
-                if bgCam.x < 0 + 10 or mainPlayer.x != screenSize[0]/2 - 100/2:
+            if checkCollision(mainPlayer.x + 50 - mainPlayer.speed, mainPlayer.y + 65.5, False) == True:
+                if background.x < 0 + 10 or mainPlayer.x != screenSize[0]/2 - 100/2:
                     mainPlayer.x -= mainPlayer.speed
                 else:
-                    bgCam.x -= mainPlayer.speed
-                    bad1.x += mainPlayer.speed
+                    background.x -= mainPlayer.speed
+                    for enemy in enemies:
+                        enemy.x += mainPlayer.speed
 
     reDraw(playerSprite)
 
