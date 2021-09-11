@@ -128,10 +128,14 @@ class player(object):
         self.changeSprite = 0
         self.shoot = False
         self.money = 0
-        self.rect = pygame.Rect(x, y, 100, 100)
+        self.rect = pygame.Rect(self.x, self.y, 100, 100)
 
     def draw(self, window, playerSpriteR):
-
+        for i in enemies:
+            if self.rect.colliderect(i.rect) == 1:
+                print(self.health)
+                self.health -= 0.10
+            
             
         self.pos = vec(self.x, self.y)
         if self.changeSprite > 38:
@@ -212,9 +216,10 @@ class walls(object):
             self.rectMapSW.append(pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
         
 class enemy(object):
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, speed):
         self.width = width
         self.height = height
+        self.speed = speed
         self.x = x
         self.y = y
         self.health = 50
@@ -243,13 +248,13 @@ class enemy(object):
         if abs(self.y - mainPlayer.y) < self.searchArea and abs(self.x - mainPlayer.y) < self.searchArea:
 
             if self.y < mainPlayer.y:
-                self.y += 2
+                self.y += self.speed
             if self.y > mainPlayer.y:
-                self.y -= 2
+                self.y -= self.speed
             if self.x > mainPlayer.x:
-                self.x -= 2
+                self.x -= self.speed
             if self.x < mainPlayer.x:
-                self.x += 2
+                self.x += self.speed
 
 
         if self.changeSprite > 33:
@@ -284,19 +289,28 @@ class background(object):
 
 
 
-changeSpritez = -1
+def textRender(text, font , colour):
+    textSurface = font.render(text, True, colour)
+    return textSurface, textSurface.get_rect()
 
+def showText(text, fontSize, textloc, colour):
+    Font = pygame.font.Font(FlexyPath + '/Font.ttf', fontSize)
+    finalText, textLoc = textRender(text, Font , colour)
+    window.blit(finalText, textloc)
     
 def ammo():
     global changeSpritez
     global Reload
+    global shots
     if Reload == True:
         if changeSpritez > 64:
             Reload = False
+            print("hello")
+            shots = 6
             changeSpritez = -1
         changeSpritez += 1
         print(changeSpritez)
-        window.blit(gun[changeSpritez//8], (1200, 600))
+        window.blit(gun[changeSpritez//8], (1200, 500))
 
 def enemyHealthBar(i):
     if i.health != 50:
@@ -311,11 +325,12 @@ def playerHealthBar():
     elif mainPlayer.health > 25:
         pygame.draw.rect(window, (255, 185, 0), pygame.Rect(70, 870, round(mainPlayer.health*(180/100)), 30))
     else:
-        pygame.draw.rect(window, "red", pygame.Rect(70, 920, round(mainPlayer.health*(180/100), 30)))
+        pygame.draw.rect(window, "red", pygame.Rect(70, 870, round(mainPlayer.health*(180/100)), 30))
     # heart (x,y)= (barX - 34, barY - 12)
     window.blit(healthHeart, (36, 858))
 
 def reDraw(playerS):
+    global shots
     background.draw(window)
     mainPlayer.draw(window, playerS)
     for i in enemies:
@@ -326,14 +341,16 @@ def reDraw(playerS):
     miniMap.draw(window)
     if Reload == True:
         ammo()
+        
     else:
-        window.blit(gun[0], (1200, 600))
+        window.blit(gun[0], (1200, 500))
     
     playerHealthBar()
 
     pygame.draw.rect(window, "black", pygame.Rect(57, 927, 136, 36))
     pygame.draw.rect(window, "white", pygame.Rect(60, 930, 130, 30))
     textsurface = font.render(str(mainPlayer.money), False, (0, 0, 0))
+    showText(str(shots)+"/6", 60, (1400,900), black)
     window.blit(textsurface, (95,932))
     window.blit(coin, (38, 920))
 
@@ -384,13 +401,13 @@ Reload = False
 running = True
 walls = walls()
 background = background(0, 0, 7000, 7000)
-enemyCount = 10
-
+enemyCount = 50
+changeSpritez = -1
 for i in range(0, enemyCount):
-    enemy(50 + random.randint(3, 5000), 50 + random.randint(3, 5000), 40, 40)
+    enemy(50 + random.randint(3, 5000), 50 + random.randint(3, 5000), 40, 40, random.randint(1,4))
 miniMap = miniMap() 
 mainPlayer = player(screenSize[0]/2 - 100/2, screenSize[1]/2 - 91/2, 100, 91)
-
+shots = 6
 while running:
     clock.tick(60)
     playerSprite = playerSpriteF
@@ -402,8 +419,11 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            shooting(mainPlayer.x, mainPlayer.y, pygame.mouse.get_pos())
+        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+
+            if shots > 0:
+                shots -= 1
+                shooting(mainPlayer.x, mainPlayer.y, pygame.mouse.get_pos())
 
 
     keys = pygame.key.get_pressed()
