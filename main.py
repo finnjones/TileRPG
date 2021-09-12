@@ -7,6 +7,9 @@ white = (255, 255, 255)
 green = (0, 128, 0)
 brown = (139,69,19)
 red = (255, 0, 0)
+grey = (128,128,128)
+
+lightGrey = (211,211,211)
 
 clock = pygame.time.Clock()
 vec = pygame.math.Vector2
@@ -133,7 +136,6 @@ class player(object):
     def draw(self, window, playerSpriteR):
         for i in enemies:
             if self.rect.colliderect(i.rect) == 1:
-                print(self.health)
                 self.health -= 0.10
             
             
@@ -182,7 +184,6 @@ class shooting(object):
             for i in enemies:
                 if self.rect.colliderect(i.rect) == 1:
                     bullets.remove(self)
-                    print("remove1")
                     self.collideT = True
                     if i.health - mainPlayer.bulletDamage > 0:
                         i.health -= mainPlayer.bulletDamage
@@ -195,7 +196,6 @@ class shooting(object):
         if self.collideT == False:
             if checkCollision(self.x, self.y, True) == False:
                 bullets.remove(self)
-                print("remove")
 
         pygame.draw.circle(window, black, (self.x,self.y), 10)
 
@@ -246,15 +246,22 @@ class enemy(object):
             enemySprite = enemySpriteR
 
         if abs(self.y - mainPlayer.y) < self.searchArea and abs(self.x - mainPlayer.y) < self.searchArea:
-
+            
             if self.y < mainPlayer.y:
-                self.y += self.speed
+                if checkCollision(self.x + 50, self.y + 65.5 + self.speed, False) == True:
+                    self.y += self.speed
+            
             if self.y > mainPlayer.y:
-                self.y -= self.speed
+                if checkCollision(self.x + 50, self.y + 65.5 - self.speed, False) == True:
+                    self.y -= self.speed
+        
             if self.x > mainPlayer.x:
-                self.x -= self.speed
+                if checkCollision(self.x + 50 - self.speed, self.y + 65.5, False) == True:
+                    self.x -= self.speed
+        
             if self.x < mainPlayer.x:
-                self.x += self.speed
+                if checkCollision(self.x + 50 + self.speed, self.y + 65.5, False) == True:
+                    self.x += self.speed
 
 
         if self.changeSprite > 33:
@@ -305,11 +312,9 @@ def ammo():
     if Reload == True:
         if changeSpritez > 64:
             Reload = False
-            print("hello")
             shots = 6
             changeSpritez = -1
         changeSpritez += 1
-        print(changeSpritez)
         window.blit(gun[changeSpritez//8], (1200, 500))
 
 def enemyHealthBar(i):
@@ -328,46 +333,6 @@ def playerHealthBar():
         pygame.draw.rect(window, "red", pygame.Rect(70, 870, round(mainPlayer.health*(180/100)), 30))
     # heart (x,y)= (barX - 34, barY - 12)
     window.blit(healthHeart, (36, 858))
-
-def reDraw(playerS):
-    global shots
-    background.draw(window)
-    mainPlayer.draw(window, playerS)
-    for i in enemies:
-        i.draw(window)
-        enemyHealthBar(i)
-    for i in bullets:
-        i.draw(window)
-    miniMap.draw(window)
-    if Reload == True:
-        ammo()
-        
-    else:
-        window.blit(gun[0], (1200, 500))
-    
-    playerHealthBar()
-
-    pygame.draw.rect(window, "black", pygame.Rect(57, 927, 136, 36))
-    pygame.draw.rect(window, "white", pygame.Rect(60, 930, 130, 30))
-    textsurface = font.render(str(mainPlayer.money), False, (0, 0, 0))
-    showText(str(shots)+"/6", 60, (1400,900), black)
-    window.blit(textsurface, (95,932))
-    window.blit(coin, (38, 920))
-
-    walls.draw()
-    for i in NEQuadrant:
-        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
-    for i in NWQuadrant:
-        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
-    for i in SEQuadrant:
-        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
-    for i in SWQuadrant:
-        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
-
-    pygame.display.flip()
-    
-
-    
 
 def checkCollision(xPos, yPos, shoot):
 
@@ -395,19 +360,106 @@ def checkCollision(xPos, yPos, shoot):
                 if yPos > objectList[i][1] and yPos < objectList[i][1] + objectList[i][3] or yPos +  10/2 > objectList[i][1] and yPos + 10/2 < objectList[i][1] + objectList[i][3] or yPos - 10/2 > objectList[i][1] and yPos - 10/2 < objectList[i][1] + objectList[i][3]:
                     return False
     return True
+Pause = False
 
+def reDraw(playerS):
+    global Pause
+    global shots
+    background.draw(window)
+    mainPlayer.draw(window, playerS)
+    for i in enemies:
+        i.draw(window)
+        enemyHealthBar(i)
+    for i in bullets:
+        i.draw(window)
+    miniMap.draw(window)
+    if Reload == True:
+        ammo()
+        
+    else:
+        window.blit(gun[0], (1200, 500))
+    
+    playerHealthBar()
+
+    pygame.draw.rect(window, "black", pygame.Rect(57, 927, 136, 36))
+    pygame.draw.rect(window, "white", pygame.Rect(60, 930, 130, 30))
+    textsurface = font.render(str(mainPlayer.money), False, (0, 0, 0))
+    showText(str(shots)+"/6", 60, (1400,900), black)
+    showText("Enemies Remaining: " + str(len(enemies)), 40, (550,50), black)
+    pause.draw()
+    if pause.draw() == "pause":
+        Pause = True
+
+    if Pause == True:
+        resume.draw()
+        sound.draw()
+        quit.draw()
+
+    window.blit(textsurface, (95,932))
+    window.blit(coin, (38, 920))
+
+    walls.draw()
+    for i in NEQuadrant:
+        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
+    for i in NWQuadrant:
+        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
+    for i in SEQuadrant:
+        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
+    for i in SWQuadrant:
+        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
+
+    pygame.display.flip()
+    
+
+class button(object):
+    def __init__(self, x, y, text):
+        self.x = x
+        self.y = y
+        self.text = text
+        self.rectangle = pygame.Rect(self.x,self.y,240,50)
+        self.msel = "Shares"
+    def draw(self):
+        # global marketSelected
+        # global Found
+        self.colour = lightGrey
+
+        self.font = pygame.font.Font(FlexyPath + '/Font.ttf', 40)
+        if self.rectangle.collidepoint(pygame.mouse.get_pos()):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.msel = ""
+                self.colour = black
+                pygame.draw.rect(window, self.colour, self.rectangle)
+                showText(self.text, 40, (self.x + 35, self.y + 5), black)
+                return self.text
+
+            else:
+                self.colour = grey
+
+
+
+        pygame.draw.rect(window, self.colour, self.rectangle)
+        showText(self.text, 40, (self.x + (120 - self.font.size(self.text)[0]/2), self.y + 5), black)    
+
+
+# def shop():
+#     pause = button(600,400, "pause")
 
 Reload = False
 running = True
 walls = walls()
 background = background(0, 0, 7000, 7000)
-enemyCount = 50
+enemyCount = 1
 changeSpritez = -1
 for i in range(0, enemyCount):
     enemy(50 + random.randint(3, 5000), 50 + random.randint(3, 5000), 40, 40, random.randint(1,4))
 miniMap = miniMap() 
 mainPlayer = player(screenSize[0]/2 - 100/2, screenSize[1]/2 - 91/2, 100, 91)
 shots = 6
+pause = button(100,100, "pause")
+resume = button(screenSize[0]/2 - 120,screenSize[1]/2 - 100, "Resume")
+sound = button(screenSize[0]/2 - 120,screenSize[1]/2, "Sound")
+quit = button(screenSize[0]/2 - 120,screenSize[1]/2 + 100, "Quit")
+
 while running:
     clock.tick(60)
     playerSprite = playerSpriteF
@@ -478,7 +530,6 @@ while running:
 
         
         
-
     reDraw(playerSprite)
 
 pygame.quit()
