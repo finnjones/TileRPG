@@ -24,7 +24,6 @@ SWQuadrant = [[293, 4927, 814, 359], [419, 4773, 310, 51], [1672, 4899, 555, 380
 SEQuadrant = [[4101, 3506, 2851, 464], [4458, 3891, 2494, 289], [4752, 4101, 2214, 86], [4892, 4220, 2074, 317], [5214, 4479, 1745, 149], [5508, 4633, 520, 149], [6481, 4689, 205, 205], [5053, 4983, 156, 107], [4976, 4521, 65, 30], [5795, 5165, 79, 30], [4787, 6278, 156, 114], [4689, 6677, 142, 135], [4878, 6544, 604, 44], [5046, 6726, 163, 142], [5095, 6341, 100, 65], [5361, 5998, 401, 37], [5998, 5557, 142, 93], [5466, 5893, 359, 30], [6005, 5564, 926, 1332], [5543, 6089, 779, 856], [5060, 6306, 877, 646], [4017, 4577, 51, 2291], [3401, 5746, 289, 184], [3772, 5837, 114, 86], [3856, 5550, 65, 23], [3590, 5277, 142, 114], [3226, 6180, 485, 590],[3107, 4591, 961, 51], [3471, 4150, 135, 93], [3779, 4059, 44, 9]]
 
 window = pygame.display.set_mode(screenSize)
-# enemySpriteNsc = [pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/FrontW/tile011.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile012.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile013.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile014.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile015.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile016.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile017.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile018.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile019.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/tile020.png")]
 playerSpriteNscF = [pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile014.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile015.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile016.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile017.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile018.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile019.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile020.png"), pygame.image.load(FlexyPath + "/Sprites/Player/FrontW/tile021.png")]
 playerSpriteNscR = [pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile014.png"), pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile015.png"), pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile016.png"), pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile017.png"), pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile018.png"), pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile019.png"), pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile020.png"), pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile021.png")]
 playerSpriteNscL = [pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile014.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile015.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile016.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile017.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile018.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile019.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile020.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Player/SideW/tile021.png"), True, False)]
@@ -37,6 +36,8 @@ enemySpriteNscL = [pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites
 enemySpriteNscB = [pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile014.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile015.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile016.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile017.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile018.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW//tile019.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile020.png")]
 
 gun = [pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/0.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/1.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/2.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/3.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/4.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/5.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/6.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/7.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/8.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/9.png"), True, False)]
+
+arrow = pygame.image.load(FlexyPath + "/Sprites/arrow.png")
 
 healthHeart = pygame.image.load(FlexyPath + "/Sprites/Misc/heart.png")
 healthHeart = pygame.transform.scale(healthHeart, (50, 50)) 
@@ -134,23 +135,26 @@ class player(object):
         self.shoot = False
         self.money = 0
         self.rect = pygame.Rect(self.x, self.y, 100, 100)
-
+        
+        
     def draw(self, window, playerSpriteR):
+        self.Playerpos = vec(self.x + 50, self.y + 50)
+        
+        self.rot = (vec(enemies[0].x, enemies[0].y) - self.Playerpos).angle_to(vec(1, 0)) + 90
         for i in enemies:
             if self.rect.colliderect(i.rect) == 1:
                 self.health -= 0.10
-            
             
         self.pos = vec(self.x, self.y)
         if self.changeSprite > 38:
             self.changeSprite = -1
         self.changeSprite += 1
+        window.blit(pygame.transform.rotate(pygame.transform.scale(arrow, (25,29)), self.rot - 180), (self.x + 35, self.y - 15))
         window.blit(playerSpriteR[self.changeSprite//5], (self.x, self.y))
 
 
 class shooting(object):
     def __init__(self, playerx, playery, mouse):
-
         self.camx = background.x
         self.camy = background.y
         self.playerx = playerx
@@ -200,22 +204,9 @@ class shooting(object):
                 bullets.remove(self)
 
         pygame.draw.circle(window, black, (self.x,self.y), 10)
+        
 
-class walls(object):
-    def __init__(self):
-        self.rectMapNW = []
-        self.rectMapNE = []
-        self.rectMapSW = []
-        self.rectMapSW = []
-    def draw(self):
-        for i in NWQuadrant:
-            self.rectMapNW.append(pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
-        for i in NEQuadrant:
-            self.rectMapNE.append(pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
-        for i in SWQuadrant:
-            self.rectMapSW.append(pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
-        for i in SWQuadrant:
-            self.rectMapSW.append(pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
+
         
 class enemy(object):
     def __init__(self, x, y, width, height, speed, health, boss):
@@ -230,13 +221,16 @@ class enemy(object):
         self.rot = 0
         self.searchArea = 2000
         self.rect = pygame.Rect(self.x, self.y, 100, 100)
+        self.offset = 150
         enemies.append(self)
 
     def draw(self, window):
         if self.boss == "False":
             self.rect = pygame.Rect(self.x, self.y, 100, 100)
+            self.offset = 0
         else:
             self.rect = pygame.Rect(self.x, self.y, 300, 300)
+            self.offset = 150
         self.pos = vec(self.x, self.y)
         self.rot = (mainPlayer.pos - self.pos).angle_to(vec(1, 0))
         if self.rot < 0:
@@ -253,33 +247,38 @@ class enemy(object):
         if self.rot < 45 or self.rot > 315:
             enemySprite = enemySpriteR
 
+
+        if self.boss == "False":
+            window.blit(enemySprite[self.changeSprite//5], (self.x, self.y))
+        else:
+            window.blit(pygame.transform.scale(enemySprite[self.changeSprite//5], (300,300)), (self.x, self.y))
+
+
         if abs(self.y - mainPlayer.y) < self.searchArea and abs(self.x - mainPlayer.y) < self.searchArea:
             
-            if self.y < mainPlayer.y:
-                # if checkCollision(self.x + 50, self.y + 65.5 + self.speed, False) == True:
+            if self.y + self.offset < mainPlayer.y:
+                if checkCollision(self.x + 50, self.y + 65.5 + self.speed, False) == True:
                     self.y += self.speed
             
-            if self.y > mainPlayer.y:
-                # if checkCollision(self.x + 50, self.y + 65.5 - self.speed, False) == True:
+            if self.y + self.offset > mainPlayer.y:
+                if checkCollision(self.x + 50, self.y + 65.5 - self.speed, False) == True:
                     self.y -= self.speed
         
-            if self.x > mainPlayer.x:
-                # if checkCollision(self.x + 50 - self.speed, self.y + 65.5, False) == True:
+            if self.x + self.offset > mainPlayer.x:
+                if checkCollision(self.x + 50 - self.speed, self.y + 65.5, False) == True:
                     self.x -= self.speed
         
-            if self.x < mainPlayer.x:
-                # if checkCollision(self.x + 50 + self.speed, self.y + 65.5, False) == True:
+            if self.x + self.offset < mainPlayer.x:
+                if checkCollision(self.x + 50 + self.speed, self.y + 65.5, False) == True:
                     self.x += self.speed
-
+            if checkCollision(self.x + 50, self.y + 65.5, False) == False:
+                self.x -= 10
 
         if self.changeSprite > 33:
             self.changeSprite = -1
         self.changeSprite += 1
         playerSprite = playerSpriteB
-        if self.boss == "False":
-            window.blit(enemySprite[self.changeSprite//5], (self.x, self.y))
-        else:
-            window.blit(pygame.transform.scale(enemySprite[self.changeSprite//5], (300,300)), (self.x, self.y))
+
         
 class miniMap(object):
     def __init__(self):
@@ -306,7 +305,7 @@ class background(object):
 
 
 def callEnemies():
-    enemy(50 + random.randint(3, 5000), 50 + random.randint(3, 5000), 40, 40, random.randint(2,4), 50, "False")
+    enemy(50 + random.randint(3, 3500), 50 + random.randint(3, 3500), 40, 40, random.randint(2,4), 50, "False")
 
 def textRender(text, font , colour):
     textSurface = font.render(text, True, colour)
@@ -348,7 +347,6 @@ def playerHealthBar():
         pygame.draw.rect(window, (255, 185, 0), pygame.Rect(70, 870, round(mainPlayer.health*(180/100)), 30))
     else:
         pygame.draw.rect(window, "red", pygame.Rect(70, 870, round(mainPlayer.health*(180/100)), 30))
-    # heart (x,y)= (barX - 34, barY - 12)
     window.blit(healthHeart, (36, 858))
 
 def checkCollision(xPos, yPos, shoot):
@@ -377,57 +375,7 @@ def checkCollision(xPos, yPos, shoot):
                 if yPos > objectList[i][1] and yPos < objectList[i][1] + objectList[i][3] or yPos +  10/2 > objectList[i][1] and yPos + 10/2 < objectList[i][1] + objectList[i][3] or yPos - 10/2 > objectList[i][1] and yPos - 10/2 < objectList[i][1] + objectList[i][3]:
                     return False
     return True
-Pause = False
 
-def reDraw(playerS):
-    global Pause
-    global shots
-    background.draw(window)
-    mainPlayer.draw(window, playerS)
-    for i in enemies:
-        i.draw(window)
-        enemyHealthBar(i)
-    for i in bullets:
-        i.draw(window)
-    miniMap.draw(window)
-    if Reload == True:
-        ammo()
-        
-    else:
-        window.blit(gun[0], (1200, 500))
-    
-    playerHealthBar()
-
-    pygame.draw.rect(window, "black", pygame.Rect(57, 927, 136, 36))
-    pygame.draw.rect(window, "white", pygame.Rect(60, 930, 130, 30))
-    textsurface = font.render(str(mainPlayer.money), False, (0, 0, 0))
-    showText(str(shots)+"/6", 60, (1400,900), black)
-    showText("Enemies Remaining: " + str(len(enemies)), 40, (550,80), black)
-    showText("Wave: " + str(wave), 40, (720, 40), black)
-    pause.draw()
-    if pause.draw() == "pause":
-        Pause = True
-
-    if Pause == True:
-        resume.draw()
-        sound.draw()
-        quit.draw()
-
-    window.blit(textsurface, (95,932))
-    window.blit(coin, (38, 920))
-
-    walls.draw()
-    for i in NEQuadrant:
-        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
-    for i in NWQuadrant:
-        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
-    for i in SEQuadrant:
-        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
-    for i in SWQuadrant:
-        pygame.draw.rect(window, red, pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
-
-    pygame.display.flip()
-    
 
 class button(object):
     def __init__(self, x, y, text):
@@ -437,8 +385,6 @@ class button(object):
         self.rectangle = pygame.Rect(self.x,self.y,240,50)
         self.msel = "Shares"
     def draw(self):
-        # global marketSelected
-        # global Found
         self.colour = lightGrey
 
         self.font = pygame.font.Font(FlexyPath + '/Font.ttf', 40)
@@ -456,108 +402,173 @@ class button(object):
 
 
         pygame.draw.rect(window, self.colour, self.rectangle)
-        showText(self.text, 40, (self.x + (120 - self.font.size(self.text)[0]/2), self.y + 5), black)    
+        showText(self.text, 40, (self.x + (120 - self.font.size(self.text)[0]/2), self.y + 5), black)   
+
+pause = False
+playc = 0
+
+def reDraw(playerS):
+    global pause
+    global shots
+    global playc
+    if playc > 0:
+        if pauseF.draw() == "pause":
+            
+            pause = True
+
+    if Play.draw() == "Play" or Play.draw() == "Play":
+        playc += 1
+        pause = False
+    if pause == False:
+        background.draw(window)
+        mainPlayer.draw(window, playerS)
+        for i in enemies:
+            i.draw(window)
+            enemyHealthBar(i)
+        for i in bullets:
+            i.draw(window)
+        miniMap.draw(window)
+        if Reload == True:
+            ammo()
+            
+        else:
+            window.blit(gun[0], (1200, 500))
+        
+        playerHealthBar()
+
+        pygame.draw.rect(window, "black", pygame.Rect(57, 927, 136, 36))
+        pygame.draw.rect(window, "white", pygame.Rect(60, 930, 130, 30))
 
 
-# def shop():
-#     pause = button(600,400, "pause")
+        textsurface = font.render(str(mainPlayer.money), False, (0, 0, 0))
+        showText(str(shots)+"/6", 60, (1400,900), black)
+        showText("Enemies Remaining: " + str(len(enemies)), 40, (550,80), black)
+        showText("Wave: " + str(wave), 40, (720, 40), black)
+        
+        
+        pauseF.draw()
+
+        window.blit(textsurface, (95,932))
+        window.blit(coin, (38, 920))
+
+    if pause == True:
+        Play.draw()
+        sound.draw()
+        quit.draw()
+    pygame.display.flip()
+    
+
+ 
+
+
 
 Reload = False
 running = True
-walls = walls()
-background = background(0, 0, 7000, 7000)
+background = background(1000, 1000, 7000, 7000)
 enemyCount = 10
 changeSpritez = -1
 for i in range(0, enemyCount):
-        enemy(50 + random.randint(3, 5000), 50 + random.randint(3, 5000), 40, 40, random.randint(2,4), 50, "False")
+        enemy(random.randint(3, 5000) - background.x, random.randint(3, 5000) - background.y, 40, 40, random.randint(2,4), 50, "False")
 miniMap = miniMap() 
 mainPlayer = player(screenSize[0]/2 - 100/2, screenSize[1]/2 - 91/2, 100, 91)
 shots = 6
-pause = button(100,100, "pause")
-resume = button(screenSize[0]/2 - 120,screenSize[1]/2 - 100, "Resume")
+pauseF = button(100,100, "pause")
+Play = button(screenSize[0]/2 - 120,screenSize[1]/2 - 100, "Play")
 sound = button(screenSize[0]/2 - 120,screenSize[1]/2, "Sound")
 quit = button(screenSize[0]/2 - 120,screenSize[1]/2 + 100, "Quit")
+play = button(screenSize[0]/2 - 120,screenSize[1]/2 - 100, "Play")
 
+
+window.blit(bg, (0, 0))
+pause = True
 while running:
     clock.tick(60)
     playerSprite = playerSpriteF
     fps = str(int(clock. get_fps()))
     pygame.display.set_caption(fps)
 
-    for i in enemies:
-        print(str(i.x), str(i.y))
+    
+
+
     if len(enemies) == 0:
         wave += 1 
         enemyCount = round(enemyCount*1.2)
         for i in range(0, enemyCount):
-            enemy(50 + random.randint(3, 5000), 50 + random.randint(3, 5000), 40, 40, random.randint(2,4), 50, "False")
+            enemy(random.randint(3, 5000) - background.x, random.randint(3, 5000) - background.y, 40, 40, random.randint(2,4), 50, "False")
         if wave % 3 == 0:
-            enemy(50 + random.randint(3, 5000), 50 + random.randint(3,5000), 300, 300, 2, round(wave % 6) * 300, "True")
+            enemy(random.randint(3, 5000) - background.x, random.randint(3, 5000) - background.y, 300, 300, 2, round(wave % 6) * 300, "True")
 
-        
+    if pause == True:
+        if sound.draw() == "Sound":
+            print("sound")
+        if quit.draw() == "Quit":
+            running = False
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        keys = pygame.key.get_pressed()
+        if pause == False:
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 
-        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-
-            if shots > 0:
-                shots -= 1
-                shooting(mainPlayer.x, mainPlayer.y, pygame.mouse.get_pos())
-
-
-    keys = pygame.key.get_pressed()
-
-    if keys[pygame.K_w]:
-        playerSprite = playerSpriteB
-        if mainPlayer.y > -10:
-            if checkCollision(mainPlayer.x + 50, mainPlayer.y + 65.5 - mainPlayer.speed, False) == True:
-                if background.y < 0 + 10 or mainPlayer.y > screenSize[1]/2 - 91/2:
-                    mainPlayer.y -= mainPlayer.speed
-                else:
-                    background.y -= mainPlayer.speed
-                    for i in enemies:
-                        i.y += mainPlayer.speed
-
-    if keys[pygame.K_s]:
-        playerSprite = playerSpriteF
-        if mainPlayer.y < screenSize[1] - 100:
-            if checkCollision(mainPlayer.x + 50,mainPlayer.y + 65.5 + mainPlayer.speed, False) == True:
-                if (background.y - background.height + screenSize[1]) > 0 - 10 or mainPlayer.y != screenSize[1]/2 - 91/2:
-                    mainPlayer.y += mainPlayer.speed
-                else:
-                    background.y += mainPlayer.speed
-                    for i in enemies:
-                        i.y -= mainPlayer.speed
-
-    if keys[pygame.K_d]:
-        playerSprite = playerSpriteR
-        if mainPlayer.x < screenSize[0] - 100 + 30:
-            if checkCollision(mainPlayer.x + 50 + mainPlayer.speed, mainPlayer.y + 65.5, False) == True:
-                if (background.x - background.height + screenSize[0]) > 0 - 10 or mainPlayer.x != screenSize[0]/2 - 100/2:
-                    mainPlayer.x += mainPlayer.speed
-                else:
-                    background.x += mainPlayer.speed
-                    for i in enemies:
-                        i.x -= mainPlayer.speed
-
-    if keys[pygame.K_a]:
-        playerSprite = playerSpriteL
-        if mainPlayer.x > -20:
-            if checkCollision(mainPlayer.x + 50 - mainPlayer.speed, mainPlayer.y + 65.5, False) == True:
-                if background.x < 0 + 10 or mainPlayer.x != screenSize[0]/2 - 100/2:
-                    mainPlayer.x -= mainPlayer.speed
-                else:
-                    background.x -= mainPlayer.speed
-                    for i in enemies:
-                        i.x += mainPlayer.speed
-    if keys[pygame.K_r]:
-        Reload = True
+                if shots > 0:
+                    shots -= 1
+                    shooting(mainPlayer.x, mainPlayer.y, pygame.mouse.get_pos())
 
 
+            
 
-        
-        
+    if pause == False:
+        if keys[pygame.K_w]:
+            playerSprite = playerSpriteB
+            if mainPlayer.y > -10:
+                if checkCollision(mainPlayer.x + 50, mainPlayer.y + 65.5 - mainPlayer.speed, False) == True:
+                    if background.y < 0 + 10 or mainPlayer.y > screenSize[1]/2 - 91/2:
+                        mainPlayer.y -= mainPlayer.speed
+                    else:
+                        background.y -= mainPlayer.speed
+                        for i in enemies:
+                            i.y += mainPlayer.speed
+
+        if keys[pygame.K_s]:
+            playerSprite = playerSpriteF
+            if mainPlayer.y < screenSize[1] - 100:
+                if checkCollision(mainPlayer.x + 50,mainPlayer.y + 65.5 + mainPlayer.speed, False) == True:
+                    if (background.y - background.height + screenSize[1]) > 0 - 10 or mainPlayer.y != screenSize[1]/2 - 91/2:
+                        mainPlayer.y += mainPlayer.speed
+                    else:
+                        background.y += mainPlayer.speed
+                        for i in enemies:
+                            i.y -= mainPlayer.speed
+
+        if keys[pygame.K_d]:
+            playerSprite = playerSpriteR
+            if mainPlayer.x < screenSize[0] - 100 + 30:
+                if checkCollision(mainPlayer.x + 50 + mainPlayer.speed, mainPlayer.y + 65.5, False) == True:
+                    if (background.x - background.height + screenSize[0]) > 0 - 10 or mainPlayer.x != screenSize[0]/2 - 100/2:
+                        mainPlayer.x += mainPlayer.speed
+                    else:
+                        background.x += mainPlayer.speed
+                        for i in enemies:
+                            i.x -= mainPlayer.speed
+
+        if keys[pygame.K_a]:
+            playerSprite = playerSpriteL
+            if mainPlayer.x > -20:
+                if checkCollision(mainPlayer.x + 50 - mainPlayer.speed, mainPlayer.y + 65.5, False) == True:
+                    if background.x < 0 + 10 or mainPlayer.x != screenSize[0]/2 - 100/2:
+                        mainPlayer.x -= mainPlayer.speed
+                    else:
+                        background.x -= mainPlayer.speed
+                        for i in enemies:
+                            i.x += mainPlayer.speed
+        if keys[pygame.K_r]:
+            Reload = True
+
+
+
+            
+            
     reDraw(playerSprite)
 
 pygame.quit()
