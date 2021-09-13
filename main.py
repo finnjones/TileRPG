@@ -46,6 +46,7 @@ coin = pygame.transform.scale(coin, (50, 50))
 
 font = pygame.font.Font('freesansbold.ttf', 26)
 
+wave = 1
 
 enemySprite = []
 enemySpriteF = []
@@ -76,6 +77,7 @@ for i in enemySpriteNscF:
     i = pygame.transform.scale(i, (100, 100))
     i.convert()
     enemySpriteF.append(i)
+
 
 for i in enemySpriteNscR:
     i = pygame.transform.scale(i, (100, 100))
@@ -216,24 +218,30 @@ class walls(object):
             self.rectMapSW.append(pygame.Rect(i[0] - background.x, i[1] - background.y, i[2], i[3]))
         
 class enemy(object):
-    def __init__(self, x, y, width, height, speed):
+    def __init__(self, x, y, width, height, speed, health, boss):
         self.width = width
         self.height = height
         self.speed = speed
         self.x = x
         self.y = y
-        self.health = 50
+        self.health = health
+        self.boss = boss
         self.changeSprite = 0
         self.rot = 0
         self.searchArea = 2000
         self.rect = pygame.Rect(self.x, self.y, 100, 100)
         enemies.append(self)
+
     def draw(self, window):
-        self.rect = pygame.Rect(self.x, self.y, 100, 100)
+        if self.boss == "False":
+            self.rect = pygame.Rect(self.x, self.y, 100, 100)
+        else:
+            self.rect = pygame.Rect(self.x, self.y, 300, 300)
         self.pos = vec(self.x, self.y)
         self.rot = (mainPlayer.pos - self.pos).angle_to(vec(1, 0))
         if self.rot < 0:
             self.rot += 360
+
         enemySprite = enemySpriteF
 
         if self.rot >= 225 and self.rot <= 315:
@@ -248,19 +256,19 @@ class enemy(object):
         if abs(self.y - mainPlayer.y) < self.searchArea and abs(self.x - mainPlayer.y) < self.searchArea:
             
             if self.y < mainPlayer.y:
-                if checkCollision(self.x + 50, self.y + 65.5 + self.speed, False) == True:
+                # if checkCollision(self.x + 50, self.y + 65.5 + self.speed, False) == True:
                     self.y += self.speed
             
             if self.y > mainPlayer.y:
-                if checkCollision(self.x + 50, self.y + 65.5 - self.speed, False) == True:
+                # if checkCollision(self.x + 50, self.y + 65.5 - self.speed, False) == True:
                     self.y -= self.speed
         
             if self.x > mainPlayer.x:
-                if checkCollision(self.x + 50 - self.speed, self.y + 65.5, False) == True:
+                # if checkCollision(self.x + 50 - self.speed, self.y + 65.5, False) == True:
                     self.x -= self.speed
         
             if self.x < mainPlayer.x:
-                if checkCollision(self.x + 50 + self.speed, self.y + 65.5, False) == True:
+                # if checkCollision(self.x + 50 + self.speed, self.y + 65.5, False) == True:
                     self.x += self.speed
 
 
@@ -268,8 +276,10 @@ class enemy(object):
             self.changeSprite = -1
         self.changeSprite += 1
         playerSprite = playerSpriteB
-        window.blit(enemySprite[self.changeSprite//5], (self.x, self.y))
-
+        if self.boss == "False":
+            window.blit(enemySprite[self.changeSprite//5], (self.x, self.y))
+        else:
+            window.blit(pygame.transform.scale(enemySprite[self.changeSprite//5], (300,300)), (self.x, self.y))
         
 class miniMap(object):
     def __init__(self):
@@ -295,6 +305,8 @@ class background(object):
         window.blit(bg, (0 - self.x, 0 - self.y))
 
 
+def callEnemies():
+    enemy(50 + random.randint(3, 5000), 50 + random.randint(3, 5000), 40, 40, random.randint(2,4), 50, "False")
 
 def textRender(text, font , colour):
     textSurface = font.render(text, True, colour)
@@ -318,9 +330,14 @@ def ammo():
         window.blit(gun[changeSpritez//8], (1200, 500))
 
 def enemyHealthBar(i):
-    if i.health != 50:
-            pygame.draw.rect(window, "red", pygame.Rect(i.x+24, i.y+105, 50, 5))
-            pygame.draw.rect(window, "green", pygame.Rect(i.x+24, i.y+105, i.health, 5))
+    if i.boss == "False":
+        if i.health != 50:
+                pygame.draw.rect(window, "red", pygame.Rect(i.x+24, i.y+105, 50, 5))
+                pygame.draw.rect(window, "green", pygame.Rect(i.x+24, i.y+105, i.health, 5))
+    else:
+        pygame.draw.rect(window, "black", pygame.Rect(395, 915, 830, 40))
+        pygame.draw.rect(window, "red", pygame.Rect(400, 920, 820, 30))
+        pygame.draw.rect(window, "green", pygame.Rect(400, 920, round(i.health*(820/((wave % 6)*300))), 30))
 
 def playerHealthBar():
     pygame.draw.rect(window, "black", pygame.Rect(67, 867, 186, 36))
@@ -385,7 +402,8 @@ def reDraw(playerS):
     pygame.draw.rect(window, "white", pygame.Rect(60, 930, 130, 30))
     textsurface = font.render(str(mainPlayer.money), False, (0, 0, 0))
     showText(str(shots)+"/6", 60, (1400,900), black)
-    showText("Enemies Remaining: " + str(len(enemies)), 40, (550,50), black)
+    showText("Enemies Remaining: " + str(len(enemies)), 40, (550,80), black)
+    showText("Wave: " + str(wave), 40, (720, 40), black)
     pause.draw()
     if pause.draw() == "pause":
         Pause = True
@@ -448,10 +466,10 @@ Reload = False
 running = True
 walls = walls()
 background = background(0, 0, 7000, 7000)
-enemyCount = 1
+enemyCount = 10
 changeSpritez = -1
 for i in range(0, enemyCount):
-    enemy(50 + random.randint(3, 5000), 50 + random.randint(3, 5000), 40, 40, random.randint(1,4))
+        enemy(50 + random.randint(3, 5000), 50 + random.randint(3, 5000), 40, 40, random.randint(2,4), 50, "False")
 miniMap = miniMap() 
 mainPlayer = player(screenSize[0]/2 - 100/2, screenSize[1]/2 - 91/2, 100, 91)
 shots = 6
@@ -466,7 +484,17 @@ while running:
     fps = str(int(clock. get_fps()))
     pygame.display.set_caption(fps)
 
+    for i in enemies:
+        print(str(i.x), str(i.y))
+    if len(enemies) == 0:
+        wave += 1 
+        enemyCount = round(enemyCount*1.2)
+        for i in range(0, enemyCount):
+            enemy(50 + random.randint(3, 5000), 50 + random.randint(3, 5000), 40, 40, random.randint(2,4), 50, "False")
+        if wave % 3 == 0:
+            enemy(50 + random.randint(3, 5000), 50 + random.randint(3,5000), 300, 300, 2, round(wave % 6) * 300, "True")
 
+        
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -488,8 +516,8 @@ while running:
                     mainPlayer.y -= mainPlayer.speed
                 else:
                     background.y -= mainPlayer.speed
-                    for enemy in enemies:
-                        enemy.y += mainPlayer.speed
+                    for i in enemies:
+                        i.y += mainPlayer.speed
 
     if keys[pygame.K_s]:
         playerSprite = playerSpriteF
@@ -499,8 +527,8 @@ while running:
                     mainPlayer.y += mainPlayer.speed
                 else:
                     background.y += mainPlayer.speed
-                    for enemy in enemies:
-                        enemy.y -= mainPlayer.speed
+                    for i in enemies:
+                        i.y -= mainPlayer.speed
 
     if keys[pygame.K_d]:
         playerSprite = playerSpriteR
@@ -510,8 +538,8 @@ while running:
                     mainPlayer.x += mainPlayer.speed
                 else:
                     background.x += mainPlayer.speed
-                    for enemy in enemies:
-                        enemy.x -= mainPlayer.speed
+                    for i in enemies:
+                        i.x -= mainPlayer.speed
 
     if keys[pygame.K_a]:
         playerSprite = playerSpriteL
@@ -521,8 +549,8 @@ while running:
                     mainPlayer.x -= mainPlayer.speed
                 else:
                     background.x -= mainPlayer.speed
-                    for enemy in enemies:
-                        enemy.x += mainPlayer.speed
+                    for i in enemies:
+                        i.x += mainPlayer.speed
     if keys[pygame.K_r]:
         Reload = True
 
