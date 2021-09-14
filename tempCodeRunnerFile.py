@@ -1,1 +1,1 @@
-    global armoryOpen
+bulletDamage

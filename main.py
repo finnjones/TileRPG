@@ -333,6 +333,8 @@ class button(object):
         global enemies
         global wave
         global shots
+        global autoGun
+        global sheild
         self.colour = lightGrey
 
         self.font = pygame.font.Font(FlexyPath + '/Font.ttf', 40)
@@ -350,6 +352,10 @@ class button(object):
                     shots = 6
                     mainPlayer.bulletC = 6
                     wave = 0
+                    sheild = False
+                    autoGun = False
+                    mainPlayer.bulletDamage = 20
+                    mainPlayer.speed = 10
                     mainPlayer.health = 100
                     mainPlayer.money = 0
                 return self.text

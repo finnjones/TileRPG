@@ -9,7 +9,8 @@ forward left back right
 ### Attack
 Shoot
 Right mouse button
-
+Reload
+R
 ### Upgrades
 Collect coins by killing enemies and then you can buy things in the shops by entering either the armoury or the brewery and clicking the button in the top left corner
 
