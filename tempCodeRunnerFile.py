@@ -1,1 +1,1 @@
-print
+mainplayer.m
