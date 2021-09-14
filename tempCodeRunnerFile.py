@@ -1,1 +1,1 @@
-mainplayer.m
+    global armoryOpen
