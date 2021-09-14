@@ -36,6 +36,8 @@ enemySpriteNscL = [pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites
 enemySpriteNscB = [pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile014.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile015.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile016.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile017.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile018.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW//tile019.png"), pygame.image.load(FlexyPath + "/Sprites/Mobs/Cactus/BackW/tile020.png")]
 
 gun = [pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/0.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/1.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/2.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/3.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/4.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/5.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/6.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/7.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/8.png"), True, False), pygame.transform.flip(pygame.image.load(FlexyPath + "/Sprites/Gun/9.png"), True, False)]
+armoryStore = pygame.image.load(FlexyPath + "/Sprites/Misc/gunS.png")
+armoryStore = pygame.transform.scale(armoryStore, (800, 620)) 
 
 arrow = pygame.image.load(FlexyPath + "/Sprites/arrow.png")
 
@@ -46,6 +48,13 @@ coin = pygame.image.load(FlexyPath + "/Sprites/Misc/coin.png")
 coin = pygame.transform.scale(coin, (50, 50)) 
 
 font = pygame.font.Font('freesansbold.ttf', 26)
+
+Shoot = pygame.mixer.Sound(FlexyPath+"/sound/gun.wav")
+Hit = pygame.mixer.Sound(FlexyPath+"/sound/hit.wav")
+
+pygame.mixer.music.load(FlexyPath+'/sound/music.wav')
+pygame.mixer.music.play(-1)
+
 
 wave = 1
 
@@ -138,7 +147,7 @@ class player(object):
         
         
     def draw(self, window, playerSpriteR):
-        self.Playerpos = vec(self.x + 50, self.y + 50)
+        self.Playerpos = vec(self.x + 50, self.y - 50)
         
         self.rot = (vec(enemies[0].x, enemies[0].y) - self.Playerpos).angle_to(vec(1, 0)) + 90
         for i in enemies:
@@ -189,6 +198,7 @@ class shooting(object):
         if self.collideT == False:
             for i in enemies:
                 if self.rect.colliderect(i.rect) == 1:
+                    Hit.play()
                     bullets.remove(self)
                     self.collideT = True
                     if i.health - mainPlayer.bulletDamage > 0:
@@ -303,6 +313,44 @@ class background(object):
     def draw(self, window):
         window.blit(bg, (0 - self.x, 0 - self.y))
 
+class button(object):
+    def __init__(self, x, y, text):
+        self.x = x
+        self.y = y
+        self.text = text
+        self.rectangle = pygame.Rect(self.x,self.y,240,50)
+        self.msel = "Shares"
+    def draw(self):
+        global enemies
+        global wave
+        global shots
+        self.colour = lightGrey
+
+        self.font = pygame.font.Font(FlexyPath + '/Font.ttf', 40)
+        if self.rectangle.collidepoint(pygame.mouse.get_pos()):
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.msel = ""
+                self.colour = black
+                pygame.draw.rect(window, self.colour, self.rectangle)
+                showText(self.text, 40, (self.x + 35, self.y + 5), black)
+                if self.text == "Restart":
+                    enemies = []
+                    background.x = 1000
+                    background.y = 1000
+                    shots = 6
+                    wave = 0
+                    mainPlayer.health = 100
+                    mainPlayer.money = 0
+                return self.text
+
+            else:
+                self.colour = grey
+
+
+
+        pygame.draw.rect(window, self.colour, self.rectangle)
+        showText(self.text, 40, (self.x + (120 - self.font.size(self.text)[0]/2), self.y + 5), black)   
+
 
 def callEnemies():
     enemy(50 + random.randint(3, 3500), 50 + random.randint(3, 3500), 40, 40, random.randint(2,4), 50, "False")
@@ -376,52 +424,41 @@ def checkCollision(xPos, yPos, shoot):
                     return False
     return True
 
+def dead():
+    
+    
+    restart.draw()
+    sound.draw()
 
-class button(object):
-    def __init__(self, x, y, text):
-        self.x = x
-        self.y = y
-        self.text = text
-        self.rectangle = pygame.Rect(self.x,self.y,240,50)
-        self.msel = "Shares"
-    def draw(self):
-        self.colour = lightGrey
-
-        self.font = pygame.font.Font(FlexyPath + '/Font.ttf', 40)
-        if self.rectangle.collidepoint(pygame.mouse.get_pos()):
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                self.msel = ""
-                self.colour = black
-                pygame.draw.rect(window, self.colour, self.rectangle)
-                showText(self.text, 40, (self.x + 35, self.y + 5), black)
-                return self.text
-
-            else:
-                self.colour = grey
-
-
-
-        pygame.draw.rect(window, self.colour, self.rectangle)
-        showText(self.text, 40, (self.x + (120 - self.font.size(self.text)[0]/2), self.y + 5), black)   
 
 pause = False
+pauseMenu = True
 playc = 0
-
+armoryOpen = False
 def reDraw(playerS):
     global pause
     global shots
     global playc
+    global pauseMenu
+    global armoryOpen
     if playc > 0:
         if pauseF.draw() == "pause":
-            
             pause = True
+            pauseMenu = True
+    else:
+        showText("Trigger Outlaws", 60, (screenSize[0]/2 - 300, screenSize[1]/2 - 200), black)
 
-    if Play.draw() == "Play" or Play.draw() == "Play":
-        playc += 1
-        pause = False
+    if pauseMenu == True and pause == True:
+        if Play.draw() == "Play":
+            playc += 1
+            pause = False
+            pauseMenu = False
+
     if pause == False:
         background.draw(window)
+
         mainPlayer.draw(window, playerS)
+        
         for i in enemies:
             i.draw(window)
             enemyHealthBar(i)
@@ -436,6 +473,9 @@ def reDraw(playerS):
         
         playerHealthBar()
 
+
+            
+
         pygame.draw.rect(window, "black", pygame.Rect(57, 927, 136, 36))
         pygame.draw.rect(window, "white", pygame.Rect(60, 930, 130, 30))
 
@@ -445,42 +485,67 @@ def reDraw(playerS):
         showText("Enemies Remaining: " + str(len(enemies)), 40, (550,80), black)
         showText("Wave: " + str(wave), 40, (720, 40), black)
         
-        
+        if mainPlayer.health <= 0:
+            dead()
         pauseF.draw()
 
         window.blit(textsurface, (95,932))
         window.blit(coin, (38, 920))
 
-    if pause == True:
+    if mainPlayer.y + background.y > 4650 and mainPlayer.x + background.x < 4020:
+        ArmoryButton.draw()
+        if ArmoryButton.draw() == "Armory":
+            armoryOpen = True
+            pause = True
+    
+
+    if armoryOpen == True:
+        window.blit(armoryStore, (screenSize[0]/2 - 400, screenSize[1]/2 - 310))
+        armoryExit.draw()
+        buyHeavyB.draw()
+        buyMagazine.draw()
+        buyAutoGun.draw()
+        # if armoryExit == "Exit":
+        # if buyHeavyB == "HeavyBuy":
+        # if buyMagazine == "MagBuy":
+        # if buyAutoGun == "AutoBuy":
+
+    if pauseMenu == True:
         Play.draw()
         sound.draw()
         quit.draw()
     pygame.display.flip()
     
 
- 
-
 
 
 Reload = False
 running = True
 background = background(1000, 1000, 7000, 7000)
-enemyCount = 10
+enemyCountBase = 10
 changeSpritez = -1
-for i in range(0, enemyCount):
+for i in range(0, enemyCountBase):
         enemy(random.randint(3, 5000) - background.x, random.randint(3, 5000) - background.y, 40, 40, random.randint(2,4), 50, "False")
 miniMap = miniMap() 
 mainPlayer = player(screenSize[0]/2 - 100/2, screenSize[1]/2 - 91/2, 100, 91)
 shots = 6
-pauseF = button(100,100, "pause")
+pauseF = button(40,30, "pause")
+ArmoryButton = button(40, 100, "Armory")
+buyHeavyB = button(500, 1000, "HeavyBuy")
+buyMagazine = button(700, 1000, "MagBuy")
+buyAutoGun = button(900, 1000, "AutoBuy")
+armoryExit = button(700, 1200, "Exit")
 Play = button(screenSize[0]/2 - 120,screenSize[1]/2 - 100, "Play")
 sound = button(screenSize[0]/2 - 120,screenSize[1]/2, "Sound")
 quit = button(screenSize[0]/2 - 120,screenSize[1]/2 + 100, "Quit")
 play = button(screenSize[0]/2 - 120,screenSize[1]/2 - 100, "Play")
+restart = button(screenSize[0]/2 - 120,screenSize[1]/2 - 100, "Restart")
 
 
 window.blit(bg, (0, 0))
 pause = True
+soundp = False
+armoryOpen = False
 while running:
     clock.tick(60)
     playerSprite = playerSpriteF
@@ -492,19 +557,31 @@ while running:
 
     if len(enemies) == 0:
         wave += 1 
-        enemyCount = round(enemyCount*1.2)
+        enemyCount = round(enemyCountBase*wave)
         for i in range(0, enemyCount):
             enemy(random.randint(3, 5000) - background.x, random.randint(3, 5000) - background.y, 40, 40, random.randint(2,4), 50, "False")
         if wave % 3 == 0:
             enemy(random.randint(3, 5000) - background.x, random.randint(3, 5000) - background.y, 300, 300, 2, round(wave % 6) * 300, "True")
 
-    if pause == True:
+    if pauseMenu == True and pause == True:
         if sound.draw() == "Sound":
-            print("sound")
+            print(soundp)
+            if soundp == False:
+                soundp = True
+                # pygame.mixer.music.load(FlexyPath+'/sound/music.wav')
+                
+            else:
+                soundp = False
+                
+            
+
         if quit.draw() == "Quit":
             running = False
 
+  
+
     for event in pygame.event.get():
+
         if event.type == pygame.QUIT:
             running = False
         keys = pygame.key.get_pressed()
@@ -512,6 +589,7 @@ while running:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
 
                 if shots > 0:
+                    Shoot.play()
                     shots -= 1
                     shooting(mainPlayer.x, mainPlayer.y, pygame.mouse.get_pos())
 
